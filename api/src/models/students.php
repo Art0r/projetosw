@@ -9,6 +9,24 @@ class StudentsModel
         $this->conn = new Connection();
     }
 
+    public function getStudentAndECById($id)
+    {
+        try {
+            $stmt = $this->conn->getConn()->prepare("SELECT st.ra, ec.id, ec.title, ec.description, ec.student_id 
+            FROM eating_condition ec 
+            INNER JOIN students st ON ec.student_id = st.id WHERE st.id = ?;");
+            $stmt->execute(array($id));
+            $results = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+            if (!$results) {
+                return false;
+            }
+
+            return $results;
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+        }
+    }
+
     public function getAllStudents()
     {
         try {

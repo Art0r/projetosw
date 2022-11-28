@@ -1,13 +1,32 @@
 import React, { useEffect, useState } from "react";
+import { Restriction } from "../../interfaces/restriction";
 import { Student } from "../../interfaces/Student";
+import { createStudent } from "../../services/Student";
 
 const CreateModal: React.FC<{
     active: boolean,
-    handleActiveModal: () => void
-}> = ({ active, handleActiveModal }) => {
-    const [student, setStudent] = useState({ id: 0, ra: 0, name: "", email: "", school: 0, telephone: "" });
+    handleActiveModal: () => void,
+    schoolId: number | undefined
+}> = ({ active, handleActiveModal, schoolId }) => {
+    const [student, setStudent] = useState<Student>({ id: 0, ra: "", name: "", email: "", school_id: 0, telephone: "", password: "" });
 
     useEffect(() => {
+        let ra = "";
+        while (true) {
+            const y = Math.round(Math.random() * (10 ** 7)).toString()
+            if (y.length == 7) {
+                ra = y;
+                break;
+            }
+        }
+        let password = "1234";
+
+        setStudent({
+            ...student,
+            ...{ ra: ra },
+            ...{ password: password },
+            ...{ school_id: schoolId },
+        })
     }, [])
 
     const handleName = (e: any) => {
@@ -69,13 +88,15 @@ const CreateModal: React.FC<{
                                 <div className="buttons">
                                     <button className="button is-ghost"
                                         onClick={(handleActiveModal)}>Cancelar</button>
+                                    <button className="button is-light is-primary"
+                                        onClick={() => createStudent(student).then(() => handleActiveModal)}>Criar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

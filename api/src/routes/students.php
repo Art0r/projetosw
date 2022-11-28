@@ -15,6 +15,7 @@ if ($parsed_url['path'] === '/students') {
         exit();
     }
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
         if (isset($_GET["delete"])) {
             $studentsController->delete();
             exit();
@@ -25,6 +26,10 @@ if ($parsed_url['path'] === '/students') {
         }
         if (isset($_GET["id"])) {
             $studentsController->readOneById();
+            exit();
+        }
+        if (isset($_GET["ecs"])) {
+            $studentsController->readOneWithECsById();
             exit();
         }
         $studentsController->readAll();

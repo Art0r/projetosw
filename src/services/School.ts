@@ -1,6 +1,3 @@
-import { SCHOOLS } from "./mock-schools";
-import { School } from "../interfaces/School";
-
 const getSchoolAndStudents = async (id: Number, school_name: string) => {
     const response = await fetch(`http://localhost:5000/schools?id=${id}`,
         { method: 'GET' });

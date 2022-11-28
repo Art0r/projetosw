@@ -1,9 +1,9 @@
 export interface Student {
     id: number,
-    ra: number,
+    ra: string,
     email: string,
     name: string,
     telephone: string,
     password: string,
-    school: number
+    school_id: number | undefined
 }

@@ -23,7 +23,7 @@ const LoginUser: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
         if (student) {
             if (student.password == password) {
                 setValidStudent(true);
-                navigate(`/?id=${student.school_id}`)
+                navigate(`/student?id=${student.id}`)
                 return;
             }
             setValidStudent(false);

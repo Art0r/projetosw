@@ -11,6 +11,25 @@ class StudentsController
         $this->studentsModel = new StudentsModel();
     }
 
+    public function readOneWithECsById()
+    {
+        try {
+            $student = $this->studentsModel->getStudentAndECById($_GET["ecs"]);
+            if ($student) {
+                echo json_encode($student);
+                http_response_code(200);
+                exit();
+            }
+            echo json_encode("Nenhum livro foi carregado");
+            http_response_code(404);
+            exit();
+        } catch (\Throwable $th) {
+            echo json_encode("Ocorreu um problema na requisição");
+            http_response_code(500);
+            exit();
+        }
+    }
+
     public function update()
     {
         try {
@@ -30,11 +49,11 @@ class StudentsController
 
             $student = $this->studentsModel->updateStudent($_GET["id"], $name, $email, $telephone);
             if ($student) {
-                echo json_encode("Um livro foi modificado com sucesso");
+                echo json_encode("Um estudante foi modificado com sucesso");
                 http_response_code(200);
                 exit();
             }
-            echo json_encode("Nenhum livro foi atualizado");
+            echo json_encode("Nenhum estudante foi atualizado");
             http_response_code(404);
             exit();
         } catch (\Throwable $th) {
@@ -64,11 +83,11 @@ class StudentsController
             );
 
             if ($student) {
-                echo json_encode("Um livro foi adicionado com sucesso");
+                echo json_encode("Um estudante foi adicionado com sucesso");
                 http_response_code(200);
                 exit();
             }
-            echo json_encode("Nenhum livro foi criado");
+            echo json_encode("Nenhum estudante foi criado");
             http_response_code(404);
             exit();
         } catch (\Throwable $th) {
@@ -140,11 +159,11 @@ class StudentsController
         try {
             $student = $this->studentsModel->deleteStudent($_GET["delete"]);
             if ($student) {
-                echo json_encode("Um livro foi deletado com sucesso");
+                echo json_encode("Um estudante foi deletado com sucesso");
                 http_response_code(200);
                 exit();
             }
-            echo json_encode("Nenhum livro foi deletado");
+            echo json_encode("Nenhum estudante foi deletado");
             http_response_code(404);
             exit();
         } catch (\Throwable $th) {
