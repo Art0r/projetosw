@@ -10,15 +10,20 @@ import './HomeSchool.css';
 
 function HomeSchool() {
   const queryParams = new URLSearchParams(useLocation().search);
-  const [students, setStudents] = useState<Student[]>();
+  const [students, setStudents] = useState<Student[]>([]);
   const [studentId, setStudentId] = useState<Number>(0);
   const [studentRa, setStudentRa] = useState<String>("");
   const [school, setSchool] = useState<School>({ address: "", email: "", id: 0, name: "", telephone: "" });
   const [activeModal, setActiveModal] = useState(false);
   const [activeCreateModal, setActiveCreateModal] = useState(false);
+  const [sendingMail, setSendingMail] = useState<boolean>(false);
 
   const handleActiveModal = async () => {
     setActiveModal(!activeModal);
+  }
+
+  const handleSendingMail = () => {
+    setSendingMail(!sendingMail);
   }
 
   const handleActiveCreateModal = () => {
@@ -35,6 +40,14 @@ function HomeSchool() {
 
 
   const renderStudents = () => {
+    if (students.length <= 0) {
+      return <tr>
+        <td>
+          <h1 className="title is-3">Nenhum aluno a ser exibido</h1>
+        </td>
+      </tr>;
+    }
+
     return students?.map(student => {
       return <StudentComponent key={student.id} student={student} handleStudentRa={handleStudentRa}
         handleActiveModal={handleActiveModal} handleStudentId={handleStudentId} />
@@ -45,9 +58,13 @@ function HomeSchool() {
 
     const getData = async () => {
       const school = await getSchoolById(Number(queryParams.get('id')));
-      setSchool(school[0])
+      if (school) {
+        setSchool(school[0]);
+      }
       const students = await getSchoolAndStudents(Number(queryParams.get('id')), school[0].name);
-      setStudents(students);
+      if (students) {
+        setStudents(students);
+      }
     }
 
     getData();
@@ -62,7 +79,7 @@ function HomeSchool() {
       />
 
       <CreateStudentModal active={activeCreateModal} handleActiveModal={handleActiveCreateModal}
-        schoolId={school.id} />
+        schoolId={school.id} handleSendingMail={handleSendingMail} sendingMail={sendingMail} />
 
       <section className='section'>
         <div className="container">
@@ -85,22 +102,37 @@ function HomeSchool() {
                     </div>
                   </div>
                   {/* CABEÇALHO FIM <h1 className='title is-1 has-text-centered'>{school?.name}</h1>*/}
-                  <table className="table is-bordered is-hoverable is-selected is-fullwidth">
-                    <thead>
-                      <tr>
-                        <th>RA</th>
-                        <th>Nome</th>
-                        <th>Email do Responsável</th>
-                        <th>Telefone do Responsável</th>
-                        <th><button className='button is-light is-success'
-                          onClick={handleActiveCreateModal}
-                        >Cadastrar Aluno</button></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {renderStudents()}
-                    </tbody>
-                  </table>
+                  {students?.length <= 0 ?
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th><button className='button is-light is-success'
+                            onClick={handleActiveCreateModal}
+                          >Cadastrar Aluno</button></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {renderStudents()}
+                      </tbody>
+                    </table>
+                    :
+                    <table className="table is-bordered is-hoverable is-selected is-fullwidth">
+                      <thead>
+                        <tr>
+                          <th>RA</th>
+                          <th>Nome</th>
+                          <th>Email do Responsável</th>
+                          <th>Telefone do Responsável</th>
+                          <th><button className='button is-light is-success'
+                            onClick={handleActiveCreateModal}
+                          >Cadastrar Aluno</button></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {renderStudents()}
+                      </tbody>
+                    </table>
+                  }
                 </div>
               </div>
             </div>

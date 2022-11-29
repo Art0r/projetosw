@@ -6,8 +6,10 @@ import { createStudent } from "../../services/Student";
 const CreateModal: React.FC<{
     active: boolean,
     handleActiveModal: () => void,
-    schoolId: Number
-}> = ({ active, handleActiveModal, schoolId }) => {
+    schoolId: Number,
+    handleSendingMail: () => void,
+    sendingMail: boolean,
+}> = ({ active, handleActiveModal, handleSendingMail, schoolId, sendingMail }) => {
     const [student, setStudent] = useState<Student>({ id: 0, ra: "", name: "", email: "", school_id: 0, telephone: "" });
 
     useEffect(() => {
@@ -88,8 +90,9 @@ const CreateModal: React.FC<{
                                 <div className="buttons">
                                     <button className="button is-ghost"
                                         onClick={(handleActiveModal)}>Cancelar</button>
-                                    <button className="button is-light is-primary"
-                                        onClick={() => createStudent(student, schoolId).then(() => handleActiveModal)}>Criar</button>
+                                    <button className="button is-light is-primary" disabled={sendingMail}
+                                        onClick={() => createStudent(student, schoolId, handleSendingMail)
+                                            .then(() => handleActiveModal)}>Criar</button>
                                 </div>
                             </div>
                         </div>

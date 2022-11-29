@@ -29,7 +29,7 @@ const getStudentByRa = async (ra: String | undefined) => {
     return false;
 }
 
-const createStudent = async (student: Student, school_id: Number) => {
+const createStudent = async (student: Student, school_id: Number, handleSendingMail: () => void) => {
     const formData = new FormData();
 
     formData.append("ra", student.ra);
@@ -49,10 +49,12 @@ const createStudent = async (student: Student, school_id: Number) => {
         formData.append("ra", student.ra);
         formData.append("password", res["pwd"]);
 
+        handleSendingMail();
         await fetch(`http://localhost:5000/students?sendmail`,
             { method: 'POST', body: formData })
+        handleSendingMail();
 
-        swal(res["msg"], {
+        swal("Um email foi enviado com as informações para login", {
             icon: "success"
         }).then(() => window.location.reload());
     } else {

@@ -10,7 +10,7 @@ import './HomeStudent.css';
 function HomeStudent() {
     const queryParams = new URLSearchParams(useLocation().search);
     const [student, setStudent] = useState({ id: 0, ra: 0, name: "", email: "", school_id: 0, telephone: "" });
-    const [ecs, setEcs] = useState<Restriction[]>();
+    const [restrictions, setRestrictions] = useState<Restriction[]>([]);
     const [restrictionId, setRestrictionId] = useState<Number>();
     const [isLoading, setIsLoading] = useState<Boolean>(false);
     const [activeModal, setActiveModal] = useState<boolean>(false);
@@ -35,9 +35,9 @@ function HomeStudent() {
             if (std) {
                 setStudent(std[0]);
             }
-            const ecs = await getOneWithRestrictionsById(Number(queryParams.get('id')));
-            if (ecs) {
-                setEcs(ecs[`${std[0].ra}`]);
+            const restrictions = await getOneWithRestrictionsById(Number(queryParams.get('id')));
+            if (restrictions) {
+                setRestrictions(restrictions[`${std[0].ra}`]);
             }
             setIsLoading(false);
         }
@@ -47,8 +47,16 @@ function HomeStudent() {
     }, []);
 
     const renderRestrictions = () => {
-        return ecs?.map(ec => {
-            return <RestrictionComponent key={ec.id.toString()} restriction={ec}
+        if (restrictions.length <= 0) {
+            return <tr>
+                <td>
+                    <h1 className="title is-3">Nenhuma restrição a ser exibida</h1>
+                </td>
+            </tr>;
+        }
+
+        return restrictions?.map(restriction => {
+            return <RestrictionComponent key={restriction.id.toString()} restriction={restriction}
                 handleActiveModal={handleActiveModal} handleRestrictionId={handleRestrictionId} />
         });
     }
@@ -85,33 +93,53 @@ function HomeStudent() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {/* CABEÇALHO FIM*/}
-                                            <table className="table is-bordered is-hoverable is-selected">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Resumo</th>
-                                                        <th>
-                                                            <button
-                                                                className="button 
-                                                                is-light is-success"
-                                                                onClick={handleActiveCreateModal}>
-                                                                Adicionar Restrição
-                                                            </button>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {renderRestrictions()}
-                                                </tbody>
-                                            </table>
+                                            {/* CABEÇALHO FIM */}
+                                            {restrictions?.length <= 0 ?
+                                                <table className="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>
+                                                                <button
+                                                                    className="button 
+                                                            is-light is-success"
+                                                                    onClick={handleActiveCreateModal}>
+                                                                    Adicionar Restrição
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {renderRestrictions()}
+                                                    </tbody>
+                                                </table>
+                                                :
+                                                <table className="table is-bordered is-hoverable is-selected">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Resumo</th>
+                                                            <th>
+                                                                <button
+                                                                    className="button 
+                                                                    is-light is-success"
+                                                                    onClick={handleActiveCreateModal}>
+                                                                    Adicionar Restrição
+                                                                </button>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {renderRestrictions()}
+                                                    </tbody>
+                                                </table>
+                                            }
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>
+                </section >
+            </div >
         </div >
     );
 }
