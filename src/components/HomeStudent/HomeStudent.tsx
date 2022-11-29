@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Restriction } from "../../interfaces/restriction";
-import { getOneWithECsById, getUserById } from "../../services/Student";
+import { getOneWithRestrictionsById, getUserById } from "../../services/Student";
 import RestrictionComponent from "../Restriction/Restriction";
 import RestrictionDetailsModal from "../RestrictionDetailsModal/RestrictionDetailsModal";
 import RestrictionCreateModal from "../RestrictionCreateModal/RestrictionCreateModal";
@@ -35,7 +35,7 @@ function HomeStudent() {
             if (std) {
                 setStudent(std[0]);
             }
-            const ecs = await getOneWithECsById(Number(queryParams.get('id')));
+            const ecs = await getOneWithRestrictionsById(Number(queryParams.get('id')));
             if (ecs) {
                 setEcs(ecs[`${std[0].ra}`]);
             }

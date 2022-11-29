@@ -6,28 +6,19 @@ import { createStudent } from "../../services/Student";
 const CreateModal: React.FC<{
     active: boolean,
     handleActiveModal: () => void,
-    schoolId: number | undefined
+    schoolId: Number
 }> = ({ active, handleActiveModal, schoolId }) => {
-    const [student, setStudent] = useState<Student>({ id: 0, ra: "", name: "", email: "", school_id: 0, telephone: "", password: "" });
+    const [student, setStudent] = useState<Student>({ id: 0, ra: "", name: "", email: "", school_id: 0, telephone: "" });
 
     useEffect(() => {
-        let ra = "";
-        while (true) {
-            const y = Math.round(Math.random() * (10 ** 7)).toString()
-            if (y.length == 7) {
-                ra = y;
-                break;
-            }
-        }
-        let password = "1234";
+    }, [])
 
+    const handleRa = (e: any) => {
         setStudent({
             ...student,
-            ...{ ra: ra },
-            ...{ password: password },
-            ...{ school_id: schoolId },
-        })
-    }, [])
+            ...{ ra: e.target.value }
+        });
+    }
 
     const handleName = (e: any) => {
         setStudent({
@@ -61,11 +52,20 @@ const CreateModal: React.FC<{
                         <div className="card-content">
                             <div className="content">
                                 <div className="field-group">
-                                    <label className="label" htmlFor="name">Nome do Aluno</label>
-                                    <input id="name" className="input"
-                                        type="text" value={student.name} placeholder="Nome do Aluno"
-                                        onChange={handleName}
-                                    />
+                                    <div className="field is-inline-block-desktop">
+                                        <label className="label" htmlFor="name">Nome do Aluno</label>
+                                        <input id="name" className="input"
+                                            type="text" value={student.name} placeholder="Nome do Aluno"
+                                            onChange={handleName}
+                                        />
+                                    </div>
+                                    <div className="field is-inline-block-desktop">
+                                        <label className="label" htmlFor="ra">RA do Aluno</label>
+                                        <input id="ra" className="input"
+                                            type="text" value={student.ra} placeholder="RA do Aluno"
+                                            onChange={handleRa}
+                                        />
+                                    </div>
                                 </div>
                                 <hr />
                                 <div className="field-group">
@@ -89,7 +89,7 @@ const CreateModal: React.FC<{
                                     <button className="button is-ghost"
                                         onClick={(handleActiveModal)}>Cancelar</button>
                                     <button className="button is-light is-primary"
-                                        onClick={() => createStudent(student).then(() => handleActiveModal)}>Criar</button>
+                                        onClick={() => createStudent(student, schoolId).then(() => handleActiveModal)}>Criar</button>
                                 </div>
                             </div>
                         </div>

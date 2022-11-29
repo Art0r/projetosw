@@ -4,5 +4,4 @@ export interface School {
     name: string,
     address: string,
     telephone: string,
-    users: number[]
 }

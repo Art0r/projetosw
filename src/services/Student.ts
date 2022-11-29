@@ -2,8 +2,8 @@ import { Student } from '../interfaces/Student';
 import swal from 'sweetalert';
 
 
-const getOneWithECsById = async (id: Number | undefined) => {
-    const response = await fetch(`http://localhost:5000/students?ecs=${id}`)
+const getOneWithRestrictionsById = async (id: Number | undefined) => {
+    const response = await fetch(`http://localhost:5000/students?restrictions=${id}`)
     const data = await response.json();
     if (response.status == 200) {
         return data;
@@ -29,26 +29,34 @@ const getStudentByRa = async (ra: String | undefined) => {
     return false;
 }
 
-const createStudent = async (student: Student) => {
-    const formData = new FormData()
+const createStudent = async (student: Student, school_id: Number) => {
+    const formData = new FormData();
 
-    formData.append("ra", `${student.ra}`);
-    formData.append("email", `${student?.email}`);
-    formData.append("name", `${student?.name}`);
-    formData.append("telephone", `${student.telephone}`)
-    formData.append("school_id", `${student.school_id}`);
-    formData.append("password", `${student.password}`);
+    formData.append("ra", student.ra);
+    formData.append("email", student?.email);
+    formData.append("name", student?.name);
+    formData.append("telephone", student.telephone);
+    formData.append("school_id", school_id.toString());
 
     const response = await fetch(`http://localhost:5000/students`,
         { method: "POST", body: formData },
     );
+    const res = await response.json()
 
     if (response.status == 200) {
-        swal(await response.json(), {
+        const formData = new FormData();
+
+        formData.append("ra", student.ra);
+        formData.append("password", res["pwd"]);
+
+        await fetch(`http://localhost:5000/students?sendmail`,
+            { method: 'POST', body: formData })
+
+        swal(res["msg"], {
             icon: "success"
         }).then(() => window.location.reload());
     } else {
-        swal(await response.json(), {
+        swal(res["msg"], {
             icon: "error"
         }).then(() => window.location.reload());
     }
@@ -110,4 +118,4 @@ const updateOneById = async (student: Student) => {
 }
 
 
-export { getUserById, createStudent, getStudentByRa, getOneWithECsById, deleteOneById, updateOneById }
+export { getUserById, createStudent, getStudentByRa, getOneWithRestrictionsById, deleteOneById, updateOneById }

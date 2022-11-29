@@ -3,9 +3,9 @@ import { Student } from '../../interfaces/Student';
 import { useLocation } from 'react-router-dom';
 import { getSchoolAndStudents, getSchoolById } from '../../services/School';
 import { School } from '../../interfaces/School';
-import DetailsModal from '../DetailsModal/DetailsModal';
+import DetailsStudentModal from '../DetailsStudentModal/DetailsStudentModal';
 import StudentComponent from '../Student/Student';
-import CreateModal from '../CreateModal/CreateModal';
+import CreateStudentModal from '../CreateStudentModal/CreateStudentModal';
 import './HomeSchool.css';
 
 function HomeSchool() {
@@ -13,7 +13,7 @@ function HomeSchool() {
   const [students, setStudents] = useState<Student[]>();
   const [studentId, setStudentId] = useState<Number>(0);
   const [studentRa, setStudentRa] = useState<String>("");
-  const [school, setSchool] = useState<School>();
+  const [school, setSchool] = useState<School>({ address: "", email: "", id: 0, name: "", telephone: "" });
   const [activeModal, setActiveModal] = useState(false);
   const [activeCreateModal, setActiveCreateModal] = useState(false);
 
@@ -57,11 +57,12 @@ function HomeSchool() {
   return (
     <div className="App">
 
-      <DetailsModal studentId={studentId} active={activeModal}
+      <DetailsStudentModal studentId={studentId} active={activeModal}
         studentRa={studentRa} handleActiveModal={handleActiveModal}
       />
 
-      <CreateModal active={activeCreateModal} handleActiveModal={handleActiveCreateModal} schoolId={school?.id} />
+      <CreateStudentModal active={activeCreateModal} handleActiveModal={handleActiveCreateModal}
+        schoolId={school.id} />
 
       <section className='section'>
         <div className="container">
@@ -70,31 +71,43 @@ function HomeSchool() {
               <div className="card">
                 <div className="card-content">
                   <div className="table-container">
-                    <h1 className='title is-1 has-text-centered'>{school?.name}</h1>
-                    <table className="table is-bordered is-hoverable is-selected is-fullwidth">
-                      <thead>
-                        <tr>
-                          <th>RA</th>
-                          <th>Nome</th>
-                          <th>Email do Responsável</th>
-                          <th>Telefone do Responsável</th>
-                          <th><button className='button is-light is-success'
-                            onClick={handleActiveCreateModal}
-                          >Cadastrar Aluno</button></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {renderStudents()}
-                      </tbody>
-                    </table>
+                    {/* CABEÇALHO COMEÇO */}
+                    <div className="card-stacked">
+                      <div className="card-content">
+                        <div className="media-content">
+                          <p className="subtitle is-5">
+                            Nome: <strong>{school.name}</strong><br />
+                            Email: <strong>{school.email}</strong><br />
+                            Telefone: <strong>{school.telephone}</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  {/* CABEÇALHO FIM <h1 className='title is-1 has-text-centered'>{school?.name}</h1>*/}
+                  <table className="table is-bordered is-hoverable is-selected is-fullwidth">
+                    <thead>
+                      <tr>
+                        <th>RA</th>
+                        <th>Nome</th>
+                        <th>Email do Responsável</th>
+                        <th>Telefone do Responsável</th>
+                        <th><button className='button is-light is-success'
+                          onClick={handleActiveCreateModal}
+                        >Cadastrar Aluno</button></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {renderStudents()}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   );
 }
 

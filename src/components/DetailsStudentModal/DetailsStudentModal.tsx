@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Restriction } from "../../interfaces/restriction";
 import { Student } from "../../interfaces/Student";
-import { deleteOneById, getOneWithECsById, getUserById, updateOneById } from "../../services/Student";
+import { deleteOneById, getOneWithRestrictionsById, getUserById, updateOneById } from "../../services/Student";
 
 const DetailsModal: React.FC<{
     studentRa: String, studentId: Number | undefined, active: boolean,
     handleActiveModal: () => void
 }> = ({ studentRa, studentId, active, handleActiveModal }) => {
-    const [student, setStudent] = useState<Student>({ id: 0, ra: "", name: "", email: "", school_id: 0, telephone: "", password: "" });
+    const [student, setStudent] = useState<Student>({ id: 0, ra: "", name: "", email: "", school_id: 0, telephone: "" });
     const [restrictions, setRestrictions] = useState<Restriction[]>();
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const DetailsModal: React.FC<{
                 if (student) {
                     setStudent(student[0]);
                 }
-                const rest = await getOneWithECsById(studentId);
+                const rest = await getOneWithRestrictionsById(studentId);
                 setRestrictions(rest[`${studentRa}`]);
             }
 
@@ -84,8 +84,8 @@ const DetailsModal: React.FC<{
                                     </div>
                                     <div className="field is-inline-block-desktop">
                                         <label className="label" htmlFor="telephone">Telefone do Responsável</label>
-                                        <input id="telephone" className="input" readOnly
-                                            type="number" value={student.telephone}
+                                        <input id="telephone" className="input"
+                                            type="text" value={student.telephone}
                                             placeholder="Telefone do Responsável"
                                             onChange={handleTelephone}
                                         />

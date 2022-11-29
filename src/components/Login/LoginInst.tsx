@@ -6,7 +6,7 @@ import './Login.css';
 const LoginInst: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType }) => {
     const queryParams = new URLSearchParams(useLocation().search);
     const [email, setEmail] = useState<string>();
-    const [password, setPassword] = useState<string>();
+    const [password, setPassword] = useState<string>("");
     const [validSchool, setValidSchool] = useState<boolean>(true);
     const navigate = useNavigate();
 
@@ -19,9 +19,19 @@ const LoginInst: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
     }
 
     const validateSchool = async () => {
-        const school = await getSchoolByEmail(email)
-        if (school) {
-            if (school.password == password) {
+        const school = await getSchoolByEmail(email);
+
+        const formData = new FormData();
+
+        formData.append('password', password);
+
+        const valid = await fetch(`http://localhost:5000/schools?verify=${email}`,
+            { method: 'POST', body: formData }
+        );
+
+        if (valid.status == 200) {
+            const response = await valid.json();
+            if (response) {
                 setValidSchool(true);
                 navigate(`/school?id=${school.id}`)
                 return;
@@ -31,6 +41,7 @@ const LoginInst: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
         }
         setValidSchool(false);
         return;
+
     }
 
     return (

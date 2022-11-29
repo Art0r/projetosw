@@ -53,10 +53,11 @@ const RestrictionDetailsModal: React.FC<{
                                     <textarea id="title" className="textarea"
                                         rows={2} cols={50}
                                         value={restriction?.title}
-                                        placeholder="Resumo"
+                                        placeholder="Resumo sobre a condição"
+                                        maxLength={200}
                                         onChange={handleTitle}>
                                     </textarea>
-
+                                    <p className="help">Máximo de 200 carateres</p>
                                 </div>
                                 <hr />
                                 <div className="field-group">
@@ -65,7 +66,7 @@ const RestrictionDetailsModal: React.FC<{
                                     <textarea id="description" className="textarea"
                                         rows={7} cols={50}
                                         value={restriction?.description}
-                                        placeholder="Descrição"
+                                        placeholder="Descrição mais detalhada da condição"
                                         onChange={handleDescription}>
                                     </textarea>
                                 </div>

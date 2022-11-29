@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Student } from '../../interfaces/Student';
 import { getStudentByRa } from '../../services/Student';
 import './Login.css';
 
 const LoginUser: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType }) => {
-    const queryParams = new URLSearchParams(useLocation().search);
-    const [ra, setRa] = useState<string>();
-    const [password, setPassword] = useState<string>();
+    const [ra, setRa] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [validStudent, setValidStudent] = useState<boolean>(true);
     const navigate = useNavigate();
 
@@ -20,10 +20,20 @@ const LoginUser: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
 
     const validateStudent = async () => {
         const student = await getStudentByRa(ra);
-        if (student) {
-            if (student.password == password) {
+
+        const formData = new FormData()
+
+        formData.append('password', password);
+
+        const valid = await fetch(`http://localhost:5000/students?verify=${ra}`,
+            { method: 'POST', body: formData }
+        );
+
+        if (valid.status == 200) {
+            const response = await valid.json();
+            if (response) {
                 setValidStudent(true);
-                navigate(`/student?id=${student.id}`)
+                navigate(`/student?id=${student.id}`);
                 return;
             }
             setValidStudent(false);

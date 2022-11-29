@@ -4,6 +4,5 @@ export interface Student {
     email: string,
     name: string,
     telephone: string,
-    password: string,
-    school_id: number | undefined
+    school_id: Number
 }
