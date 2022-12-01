@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Restriction } from "../../interfaces/restriction";
 import { getOneWithRestrictionsById, getUserById } from "../../services/Student";
 import RestrictionComponent from "../Restriction/Restriction";
 import RestrictionDetailsModal from "../RestrictionDetailsModal/RestrictionDetailsModal";
 import RestrictionCreateModal from "../RestrictionCreateModal/RestrictionCreateModal";
 import './HomeStudent.css';
+import { useCookies } from "react-cookie";
 
 function HomeStudent() {
     const queryParams = new URLSearchParams(useLocation().search);
@@ -15,6 +16,8 @@ function HomeStudent() {
     const [isLoading, setIsLoading] = useState<Boolean>(false);
     const [activeModal, setActiveModal] = useState<boolean>(false);
     const [activeCreateModal, setActiveCreateModal] = useState<boolean>(false);
+    const [cookies, setCookies] = useCookies();
+    const navigate = useNavigate();
 
     const handleActiveModal = async () => {
         setActiveModal(!activeModal);
@@ -33,13 +36,25 @@ function HomeStudent() {
             setIsLoading(true);
             const std = await getUserById(Number(queryParams.get('id')));
             if (std) {
+
+                const stored_ra = cookies['user'].split('!&$@#&')[0];
+                const stored_password = cookies['user'].split('!&$@#&')[1];
+
+                if (!(stored_password === std[0]["password"] && stored_ra === std[0]["ra"])) {
+                    navigate('/');
+                    return;
+                }
+
                 setStudent(std[0]);
+                const restrictions = await getOneWithRestrictionsById(Number(queryParams.get('id')));
+                if (restrictions) {
+                    setRestrictions(restrictions[`${std[0].ra}`]);
+                }
+                return;
             }
-            const restrictions = await getOneWithRestrictionsById(Number(queryParams.get('id')));
-            if (restrictions) {
-                setRestrictions(restrictions[`${std[0].ra}`]);
-            }
+            navigate('/')
             setIsLoading(false);
+            return;
         }
 
         getData();

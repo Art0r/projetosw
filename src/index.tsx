@@ -6,19 +6,22 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login/Login';
 import HomeStudent from './components/HomeStudent/HomeStudent';
+import { CookiesProvider } from 'react-cookie';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<Navigate to="/login" />} />
-      <Route path='/school' element={<HomeSchool />} />
-      <Route path='/login' element={<Login />} />
-      <Route path='/student' element={<HomeStudent />} />
-    </Routes>
-  </BrowserRouter >
+  <CookiesProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Navigate to="/login" />} />
+        <Route path='/school' element={<HomeSchool />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/student' element={<HomeStudent />} />
+      </Routes>
+    </BrowserRouter>
+  </CookiesProvider>
 );
 
 

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Student } from '../../interfaces/Student';
 import { getStudentByRa } from '../../services/Student';
@@ -8,6 +9,8 @@ const LoginUser: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
     const [ra, setRa] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [validStudent, setValidStudent] = useState<boolean>(true);
+    const [cookies, setCookies] = useCookies();
+
     const navigate = useNavigate();
 
     const handleRa = (e: any) => {
@@ -31,7 +34,11 @@ const LoginUser: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
 
         if (valid.status == 200) {
             const response = await valid.json();
-            if (response) {
+
+            if (response['valid']) {
+                const token = `${ra}!&$@#&${response["password"]}`;
+                setCookies('user', token);
+
                 setValidStudent(true);
                 navigate(`/student?id=${student.id}`);
                 return;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getSchoolByEmail } from '../../services/School';
 import './Login.css';
@@ -8,6 +9,7 @@ const LoginInst: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
     const [email, setEmail] = useState<string>();
     const [password, setPassword] = useState<string>("");
     const [validSchool, setValidSchool] = useState<boolean>(true);
+    const [cookies, setCookies] = useCookies();
     const navigate = useNavigate();
 
     const handleEmail = (e: any) => {
@@ -31,7 +33,11 @@ const LoginInst: React.FC<{ handleLoginType: () => void }> = ({ handleLoginType 
 
         if (valid.status == 200) {
             const response = await valid.json();
-            if (response) {
+
+            if (response["valid"]) {
+                const token = `${email}!&$@#&${response["password"]}`;
+                setCookies('user', token);
+
                 setValidSchool(true);
                 navigate(`/school?id=${school.id}`)
                 return;

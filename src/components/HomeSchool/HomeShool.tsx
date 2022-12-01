@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Student } from '../../interfaces/Student';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getSchoolAndStudents, getSchoolById } from '../../services/School';
 import { School } from '../../interfaces/School';
 import DetailsStudentModal from '../DetailsStudentModal/DetailsStudentModal';
 import StudentComponent from '../Student/Student';
 import CreateStudentModal from '../CreateStudentModal/CreateStudentModal';
 import './HomeSchool.css';
+import { useCookies } from 'react-cookie';
 
 function HomeSchool() {
   const queryParams = new URLSearchParams(useLocation().search);
@@ -17,6 +18,8 @@ function HomeSchool() {
   const [activeModal, setActiveModal] = useState(false);
   const [activeCreateModal, setActiveCreateModal] = useState(false);
   const [sendingMail, setSendingMail] = useState<boolean>(false);
+  const [cookies, setCookies] = useCookies();
+  const navigate = useNavigate();
 
   const handleActiveModal = async () => {
     setActiveModal(!activeModal);
@@ -59,12 +62,24 @@ function HomeSchool() {
     const getData = async () => {
       const school = await getSchoolById(Number(queryParams.get('id')));
       if (school) {
+
+        const stored_email = cookies['user'].split('!&$@#&')[0];
+        const stored_password = cookies['user'].split('!&$@#&')[1];
+
+        if (!(stored_password === school[0]["password"] && stored_email === school[0]["email"])) {
+          navigate('/');
+          return;
+        }
+
         setSchool(school[0]);
+        const students = await getSchoolAndStudents(Number(queryParams.get('id')), school[0].name);
+        if (students) {
+          setStudents(students);
+        }
+        return;
       }
-      const students = await getSchoolAndStudents(Number(queryParams.get('id')), school[0].name);
-      if (students) {
-        setStudents(students);
-      }
+      navigate('/');
+      return;
     }
 
     getData();
